@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система разработки технологических процессов сборки прибора</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #ecf0f1;
+            padding: 10px 10px 0;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #7f8c8d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #3498db;
+        }
+
+        .tab-btn.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .operations-list {
+            margin-top: 20px;
+        }
+
+        .operation-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .operation-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52,152,219,0.2);
+        }
+
+        .operation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .operation-number {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .operation-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .operation-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .sketch-area {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px dashed #bdc3c7;
+        }
+
+        .sketch-canvas {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: crosshair;
+            background: white;
+        }
+
+        .sketch-tools {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-picker {
+            width: 40px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .brush-size {
+            width: 100px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .info-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .document-preview {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 40px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .document-header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .document-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .document-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .document-table th,
+        .document-table td {
+            border: 1px solid #2c3e50;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .document-table th {
+            background: #ecf0f1;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .print-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .document-preview,
+            .document-preview * {
+                visibility: visible;
+            }
+            .document-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+        }
+
+        .equipment-list {
+            margin-top: 10px;
+        }
+
+        .equipment-item {
+            display: inline-block;
+            background: #e8f4f8;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 5px;
+            font-size: 13px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #ecf0f1;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .flowchart-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .flowchart-node {
+            display: inline-block;
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin: 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .flowchart-arrow {
+            display: inline-block;
+            color: #3498db;
+            font-size: 24px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏭 Система разработки технологических процессов сборки прибора</h1>
+            <p>Создание технологической схемы → Маршрутная карта → Операционные карты → Эскизы</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('tech-scheme')">1. Технологическая схема</button>
+            <button class="tab-btn" onclick="switchTab('route-map')">2. Маршрутная карта</button>
+            <button class="tab-btn" onclick="switchTab('sketches')">3. Эскизы операций</button>
+            <button class="tab-btn" onclick="switchTab('operation-card')">4. Операционная карта</button>
+            <button class="tab-btn" onclick="switchTab('combined-map')">5. Маршрутно-операционная карта</button>
+        </div>
+
+        <!-- Вкладка 1: Технологическая схема -->
+        <div id="tech-scheme" class="tab-content active">
+            <h2 class="section-title">Разработка структуры технологической схемы</h2>
+            
+            <div class="grid-container" style="margin-bottom: 20px;">
+                <div class="info-card">
+                    <h3>📋 Информация о приборе</h3>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Наименование прибора:</label>
+                        <input type="text" id="device-name" placeholder="Введите название прибора">
+                    </div>
+                    <div class="form-group">
+                        <label>Обозначение (чертеж):</label>
+                        <input type="text" id="device-code" placeholder="Например: АБВГ.123456.001">
+                    </div>
+                    <div class="form-group">
+                        <label>Тип производства:</label>
+                        <select id="production-type">
+                            <option value="single">Единичное</option>
+                            <option value="small">Мелкосерийное</option>
+                            <option value="series">Серийное</option>
+                            <option value="mass">Массовое</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="info-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <h3>📊 Статистика процесса</h3>
+                    <div class="stats-grid" style="margin-top: 15px;">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-ops">0</div>
+                            <div class="stat-label">Всего операций</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-transitions">0</div>
+                            <div class="stat-label">Переходов</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h3 style="margin-bottom: 15px; color: #2c3e50;">Добавление операции</h3>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label>Номер операции:</label>
+                        <input type="number" id="op-number" placeholder="005, 010, 015..." step="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Наименование операции:</label>
+                        <input type="text" id="op-name" placeholder="Например: Сборка корпуса">
+                    </div>
+                    <div class="form-group">
+                        <label>Цех/Участок:</label>
+                        <input type="text" id="op-shop" placeholder="Сборочный цех №1">
+                    </div>
+                    <div class="form-group">
+                        <label>Норма времени (мин):</label>
+                        <input type="number" id="op-time" placeholder="0.0" step="0.1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Содержание переходов:</label>
+                    <textarea id="op-transitions" placeholder="Опишите последовательность действий (переходов) в рамках операции"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Оборудование и оснастка (через запятую):</label>
+                    <input type="text" id="op-equipment" placeholder="Отвертка, паяльник, тиски, стенд контрольный...">
+                </div>
+
+                <div class="form-group">
+                    <label>Материалы и комплектующие:</label>
+                    <textarea id="op-materials" placeholder="Винты М3х10, шайбы, гайки, провода..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="addOperation()">➕ Добавить операцию</button>
+                <button class="btn btn-success" onclick="generateRouteMap()">📄 Сформировать маршрутную карту</button>
+            </div>
+
+            <div class="operations-list" id="operations-list">
+                <h3 style="margin-bottom: 15px; color: #2c3e50;">Список операций технологического процесса</h3>
+                <div id="operations-container"></div>
+            </div>
+
+            <div class="flowchart-container" id="flowchart-container">
+                <h3 style="margin-bottom: 15px; color: #2c3e50;">Визуализация технологического процесса</h3>
+                <div id="flowchart"></div>
+            </div>
+        </div>
+
+        <!-- Вкладка 2: Маршрутная карта -->
+        <div id="route-map" class="tab-content">
+            <h2 class="section-title">Маршрутная карта (МК)</h2>
+            
+            <div class="print-buttons" style="margin-bottom: 20px;">
+                <button class="btn btn-warning" onclick="editRouteMap()">✏️ Редактировать МК</button>
+                <button class="btn btn-success" onclick="proceedToSketches()">➡️ Перейти к эскизам</button>
+                <button class="btn btn-primary" onclick="printDocument('route-map-preview')">🖨️ Печать</button>
+                <button class="btn btn-secondary" onclick="exportToPDF('route-map-preview')">💾 Экспорт</button>
+            </div>
+
+            <div id="route-map-edit" class="hidden">
+                <div class="form-group">
+                    <label>Дополнительные примечания к маршрутной карте:</label>
+                    <textarea id="route-notes" placeholder="Введите дополнительные указания и примечания"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Контроль качества:</label>
+                    <textarea id="quality-control" placeholder="Требования к контролю качества на каждой операции"></textarea>
+                </div>
+                <button class="btn btn-success" onclick="saveRouteMapEdits()">💾 Сохранить изменения</button>
+            </div>
+
+            <div class="document-preview" id="route-map-preview">
+                <div class="document-header">
+                    <div class="document-title">МАРШРУТНАЯ КАРТА</div>
+                    <div style="margin-top: 10px; color: #7f8c8d;">
+                        Прибор: <span id="rm-device-name"></span> | Обозначение: <span id="rm-device-code"></span>
+                    </div>
+                </div>
+                <table class="document-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">№ оп.</th>
+                            <th>Наименование операции</th>
+                            <th>Цех</th>
+                            <th>Содержание переходов</th>
+                            <th>Оборудование</th>
+                            <th style="width: 80px;">Норма времени</th>
+                            <th>Примечания</th>
+                        </tr>
+                    </thead>
+                    <tbody id="route-map-body">
+                    </tbody>
+                </table>
+                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                    <strong>Итого операций:</strong> <span id="rm-total-ops">0</span> | 
+                    <strong>Общая норма времени:</strong> <span id="rm-total-time">0</span> мин
+                </div>
+                <div id="route-map-notes" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- Вкладка 3: Эскизы -->
+        <div id="sketches" class="tab-content">
+            <h2 class="section-title">Эскизы к операциям</h2>
+            
+            <div class="print-buttons" style="margin-bottom: 20px;">
+                <button class="btn btn-success" onclick="saveAllSketches()">💾 Сохранить все эскизы</button>
+                <button class="btn btn-primary" onclick="proceedToOperationCard()">➡️ Создать операционную карту</button>
+            </div>
+
+            <div class="form-group">
+                <label>Выберите операцию для добавления эскиза:</label>
+                <select id="sketch-operation-select" onchange="loadSketchForOperation()">
+                    <option value="">-- Выберите операцию --</option>
+                </select>
+            </div>
+
+            <div id="sketch-editor" class="hidden">
+                <h3 style="margin-bottom: 15px; color: #2c3e50;">
+                    Эскиз для операции <span id="sketch-op-number"></span>: <span id="sketch-op-name"></span>
+                </h3>
+                
+                <div class="sketch-area">
+                    <div class="sketch-tools">
+                        <label>Цвет:</label>
+                        <input type="color" id="sketch-color" class="color-picker" value="#000000">
+                        
+                        <label>Толщина кисти:</label>
+                        <input type="range" id="sketch-brush-size" class="brush-size" min="1" max="20" value="3">
+                        
+                        <button class="btn btn-secondary" onclick="clearSketch()">🗑️ Очистить</button>
+                        <button class="btn btn-warning" onclick="undoSketch()">↩️ Отменить</button>
+                        <button class="btn btn-success" onclick="saveCurrentSketch()">💾 Сохранить эскиз</button>
+                    </div>
+                    
+                    <canvas id="sketch-canvas" class="sketch-canvas" width="800" height="500"></canvas>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Пояснения к эскизу:</label>
+                        <textarea id="sketch-description" placeholder="Опишите что изображено на эскизе, размеры, особенности..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sketches-gallery" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px; color: #2c3e50;">Галерея сохранённых эскизов</h3>
+                <div id="sketches-container" class="grid-container"></div>
+            </div>
+        </div>
+
+        <!-- Вкладка 4: Операционная карта -->
+        <div id="operation-card" class="tab-content">
+            <h2 class="section-title">Операционная карта (ОК)</h2>
+            
+            <div class="print-buttons" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="generateAllOperationCards()">🔄 Обновить все ОК</button>
+                <button class="btn btn-success" onclick="proceedToCombinedMap()">➡️ Создать маршрутно-операционную карту</button>
+                <button class="btn btn-primary" onclick="printDocument('operation-card-preview')">🖨️ Печать</button>
+            </div>
+
+            <div class="form-group">
+                <label>Выберите операцию для просмотра операционной карты:</label>
+                <select id="op-card-select" onchange="displayOperationCard()">
+                    <option value="">-- Выберите операцию --</option>
+                </select>
+            </div>
+
+            <div class="document-preview" id="operation-card-preview">
+                <div class="document-header">
+                    <div class="document-title">ОПЕРАЦИОННАЯ КАРТА</div>
+                    <div style="margin-top: 10px; color: #7f8c8d;">
+                        Прибор: <span id="oc-device-name"></span> | 
+                        Операция № <span id="oc-op-number"></span>: <span id="oc-op-name"></span>
+                    </div>
+                </div>
+                
+                <div id="operation-card-content">
+                    <p style="text-align: center; color: #7f8c8d; padding: 40px;">
+                        Выберите операцию из списка выше для просмотра операционной карты
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка 5: Маршрутно-операционная карта -->
+        <div id="combined-map" class="tab-content">
+            <h2 class="section-title">Маршрутно-операционная карта (МОК)</h2>
+            
+            <div class="print-buttons" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="generateCombinedMap()">🔄 Сформировать МОК</button>
+                <button class="btn btn-success" onclick="printDocument('combined-map-preview')">🖨️ Печать</button>
+                <button class="btn btn-secondary" onclick="exportToPDF('combined-map-preview')">💾 Экспорт в PDF</button>
+                <button class="btn btn-warning" onclick="exportToJSON()">💾 Экспорт данных (JSON)</button>
+            </div>
+
+            <div class="document-preview" id="combined-map-preview">
+                <div class="document-header">
+                    <div class="document-title">МАРШРУТНО-ОПЕРАЦИОННАЯ КАРТА</div>
+                    <div style="margin-top: 10px; color: #7f8c8d;">
+                        Прибор: <span id="cm-device-name"></span> | Обозначение: <span id="cm-device-code"></span> | 
+                        Тип производства: <span id="cm-production-type"></span>
+                    </div>
+                </div>
+                
+                <div id="combined-map-content">
+                    <p style="text-align: center; color: #7f8c8d; padding: 40px;">
+                        Нажмите "Сформировать МОК" для генерации документа
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для просмотра эскиза -->
+    <div id="sketch-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-sketch-title">Эскиз операции</h3>
+                <button class="close-modal" onclick="closeSketchModal()">&times;</button>
+            </div>
+            <div id="modal-sketch-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let operations = [];
+        let sketches = {};
+        let routeMapNotes = '';
+        let qualityControlNotes = '';
+        let currentSketchOp = null;
+        let canvas, ctx;
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let sketchHistory = [];
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            updateStats();
+            renderOperations();
+            renderFlowchart();
+            updateRouteMap();
+            populateSelects();
+        });
+
+        // Переключение вкладок
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabId === 'sketches') {
+                populateSketchSelect();
+            } else if (tabId === 'operation-card') {
+                populateOperationCardSelect();
+            }
+        }
+
+        // Добавление операции
+        function addOperation() {
+            const opNumber = document.getElementById('op-number').value;
+            const opName = document.getElementById('op-name').value;
+            const opShop = document.getElementById('op-shop').value;
+            const opTime = document.getElementById('op-time').value;
+            const opTransitions = document.getElementById('op-transitions').value;
+            const opEquipment = document.getElementById('op-equipment').value;
+            const opMaterials = document.getElementById('op-materials').value;
+
+            if (!opNumber || !opName) {
+                alert('Пожалуйста, заполните номер и наименование операции!');
+                return;
+            }
+
+            const operation = {
+                id: Date.now(),
+                number: opNumber,
+                name: opName,
+                shop: opShop,
+                time: opTime || 0,
+                transitions: opTransitions,
+                equipment: opEquipment,
+                materials: opMaterials,
+                notes: '',
+                sketch: null,
+                sketchDescription: ''
+            };
+
+            operations.push(operation);
+            operations.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+            
+            saveToLocalStorage();
+            updateStats();
+            renderOperations();
+            renderFlowchart();
+            
+            // Очистка полей
+            clearOperationForm();
+            
+            alert('Операция успешно добавлена!');
+        }
+
+        // Очистка формы
+        function clearOperationForm() {
+            document.getElementById('op-number').value = '';
+            document.getElementById('op-name').value = '';
+            document.getElementById('op-shop').value = '';
+            document.getElementById('op-time').value = '';
+            document.getElementById('op-transitions').value = '';
+            document.getElementById('op-equipment').value = '';
+            document.getElementById('op-materials').value = '';
+        }
+
+        // Рендеринг списка операций
+        function renderOperations() {
+            const container = document.getElementById('operations-container');
+            
+            if (operations.length === 0) {
+                container.innerHTML = '<p style="color: #7f8c8d; text-align: center; padding: 40px;">Операции ещё не добавлены</p>';
+                return;
+            }
+
+            container.innerHTML = operations.map(op => `
+                <div class="operation-item">
+                    <div class="operation-header">
+                        <span class="operation-number">Оп. ${op.number}</span>
+                        <div class="operation-actions">
+                            <button class="btn btn-warning" onclick="editOperation(${op.id})">✏️</button>
+                            <button class="btn btn-danger" onclick="deleteOperation(${op.id})">🗑️</button>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">${op.name}</h3>
+                    <div class="operation-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Цех/Участок</div>
+                            <div class="detail-value">${op.shop || 'Не указано'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Норма времени</div>
+                            <div class="detail-value">${op.time} мин</div>
+                        </div>
+                    </div>
+                    ${op.transitions ? `
+                        <div class="detail-item" style="margin-top: 15px;">
+                            <div class="detail-label">Содержание переходов</div>
+                            <div class="detail-value">${op.transitions}</div>
+                        </div>
+                    ` : ''}
+                    ${op.equipment ? `
+                        <div class="detail-item" style="margin-top: 15px;">
+                            <div class="detail-label">Оборудование и оснастка</div>
+                            <div class="detail-value">${op.equipment}</div>
+                        </div>
+                    ` : ''}
+                    ${op.materials ? `
+                        <div class="detail-item" style="margin-top: 15px;">
+                            <div class="detail-label">Материалы и комплектующие</div>
+                            <div class="detail-value">${op.materials}</div>
+                        </div>
+                    ` : ''}
+                    ${op.sketch ? `
+                        <div class="detail-item" style="margin-top: 15px;">
+                            <div class="detail-label">Эскиз</div>
+                            <div class="detail-value">✅ Эскиз добавлен</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Редактирование операции
+        function editOperation(id) {
+            const op = operations.find(o => o.id === id);
+            if (!op) return;
+
+            document.getElementById('op-number').value = op.number;
+            document.getElementById('op-name').value = op.name;
+            document.getElementById('op-shop').value = op.shop;
+            document.getElementById('op-time').value = op.time;
+            document.getElementById('op-transitions').value = op.transitions;
+            document.getElementById('op-equipment').value = op.equipment;
+            document.getElementById('op-materials').value = op.materials;
+
+            deleteOperation(id, true);
+            window.scrollTo(0, 0);
+        }
+
+        // Удаление операции
+        function deleteOperation(id, silent = false) {
+            if (!silent && !confirm('Вы уверены, что хотите удалить эту операцию?')) return;
+            
+            operations = operations.filter(o => o.id !== id);
+            saveToLocalStorage();
+            updateStats();
+            renderOperations();
+            renderFlowchart();
+            
+            if (!silent) alert('Операция удалена!');
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            document.getElementById('total-ops').textContent = operations.length;
+            
+            const totalTransitions = operations.reduce((sum, op) => {
+                return sum + (op.transitions ? op.transitions.split(/[.,;\n]/).filter(t => t.trim()).length : 0);
+            }, 0);
+            
+            document.getElementById('total-transitions').textContent = totalTransitions;
+        }
+
+        // Рендеринг блок-схемы
+        function renderFlowchart() {
+            const flowchart = document.getElementById('flowchart');
+            
+            if (operations.length === 0) {
+                flowchart.innerHTML = '<p style="color: #7f8c8d; text-align: center; padding: 20px;">Добавьте операции для отображения схемы</p>';
+                return;
+            }
+
+            flowchart.innerHTML = operations.map((op, index) => `
+                <div class="flowchart-node">
+                    <strong>Оп. ${op.number}</strong><br>
+                    <small>${op.name}</small>
+                </div>
+                ${index < operations.length - 1 ? '<span class="flowchart-arrow">→</span>' : ''}
+            `).join('');
+        }
+
+        // Генерация маршрутной карты
+        function generateRouteMap() {
+            if (operations.length === 0) {
+                alert('Сначала добавьте операции!');
+                return;
+            }
+            
+            updateRouteMap();
+            switchTab('route-map');
+            document.querySelector('[onclick="switchTab(\'route-map\')"]').classList.add('active');
+            alert('Маршрутная карта сформирована! Вы можете её отредактировать.');
+        }
+
+        // Обновление маршрутной карты
+        function updateRouteMap() {
+            const deviceName = document.getElementById('device-name').value || 'Не указано';
+            const deviceCode = document.getElementById('device-code').value || 'Не указано';
+            
+            document.getElementById('rm-device-name').textContent = deviceName;
+            document.getElementById('rm-device-code').textContent = deviceCode;
+            
+            const tbody = document.getElementById('route-map-body');
+            
+            if (operations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #7f8c8d;">Операции не добавлены</td></tr>';
+                document.getElementById('rm-total-ops').textContent = '0';
+                document.getElementById('rm-total-time').textContent = '0';
+                return;
+            }
+
+            tbody.innerHTML = operations.map(op => `
+                <tr>
+                    <td>${op.number}</td>
+                    <td>${op.name}</td>
+                    <td>${op.shop || '-'}</td>
+                    <td>${op.transitions || '-'}</td>
+                    <td>${op.equipment || '-'}</td>
+                    <td>${op.time}</td>
+                    <td>${op.notes || '-'}</td>
+                </tr>
+            `).join('');
+
+            const totalTime = operations.reduce((sum, op) => sum + parseFloat(op.time || 0), 0);
+            document.getElementById('rm-total-ops').textContent = operations.length;
+            document.getElementById('rm-total-time').textContent = totalTime.toFixed(2);
+            
+            const notesDiv = document.getElementById('route-map-notes');
+            if (routeMapNotes || qualityControlNotes) {
+                notesDiv.innerHTML = `
+                    <h4 style="margin-bottom: 10px; color: #2c3e50;">Примечания:</h4>
+                    ${routeMapNotes ? `<p style="margin-bottom: 10px;"><strong>Общие указания:</strong> ${routeMapNotes}</p>` : ''}
+                    ${qualityControlNotes ? `<p><strong>Контроль качества:</strong> ${qualityControlNotes}</p>` : ''}
+                `;
+            } else {
+                notesDiv.innerHTML = '';
+            }
+        }
+
+        // Редактирование МК
+        function editRouteMap() {
+            document.getElementById('route-map-edit').classList.remove('hidden');
+        }
+
+        // Сохранение изменений в МК
+        function saveRouteMapEdits() {
+            routeMapNotes = document.getElementById('route-notes').value;
+            qualityControlNotes = document.getElementById('quality-control').value;
+            
+            operations.forEach(op => {
+                op.notes = routeMapNotes;
+            });
+            
+            saveToLocalStorage();
+            updateRouteMap();
+            document.getElementById('route-map-edit').classList.add('hidden');
+            alert('Изменения сохранены!');
+        }
+
+        // Переход к эскизам
+        function proceedToSketches() {
+            if (operations.length === 0) {
+                alert('Сначала добавьте операции!');
+                return;
+            }
+            switchTab('sketches');
+        }
+
+        // Заполнение селекта операций для эскизов
+        function populateSketchSelect() {
+            const select = document.getElementById('sketch-operation-select');
+            select.innerHTML = '<option value="">-- Выберите операцию --</option>' +
+                operations.map(op => `<option value="${op.id}">Оп. ${op.number}: ${op.name}</option>`).join('');
+        }
+
+        // Загрузка эскиза для операции
+        function loadSketchForOperation() {
+            const opId = document.getElementById('sketch-operation-select').value;
+            
+            if (!opId) {
+                document.getElementById('sketch-editor').classList.add('hidden');
+                currentSketchOp = null;
+                return;
+            }
+
+            const op = operations.find(o => o.id == opId);
+            if (!op) return;
+
+            currentSketchOp = op;
+            document.getElementById('sketch-editor').classList.remove('hidden');
+            document.getElementById('sketch-op-number').textContent = op.number;
+            document.getElementById('sketch-op-name').textContent = op.name;
+            document.getElementById('sketch-description').value = op.sketchDescription || '';
+
+            initCanvas();
+            
+            if (op.sketch) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = op.sketch;
+            }
+        }
+
+        // Инициализация канваса
+        function initCanvas() {
+            canvas = document.getElementById('sketch-canvas');
+            ctx = canvas.getContext('2d');
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Сенсорное управление
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+            saveSketchState();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            ctx.strokeStyle = document.getElementById('sketch-color').value;
+            ctx.lineWidth = document.getElementById('sketch-brush-size').value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            isDrawing = true;
+            [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
+            saveSketchState();
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            ctx.strokeStyle = document.getElementById('sketch-color').value;
+            ctx.lineWidth = document.getElementById('sketch-brush-size').value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            [lastX, lastY] = [x, y];
+        }
+
+        function saveSketchState() {
+            if (sketchHistory.length > 10) {
+                sketchHistory.shift();
+            }
+            sketchHistory.push(canvas.toDataURL());
+        }
+
+        function undoSketch() {
+            if (sketchHistory.length > 0) {
+                const prevState = sketchHistory.pop();
+                const img = new Image();
+                img.onload = function() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = prevState;
+            }
+        }
+
+        function clearSketch() {
+            if (confirm('Очистить эскиз?')) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                sketchHistory = [];
+            }
+        }
+
+        function saveCurrentSketch() {
+            if (!currentSketchOp) return;
+            
+            const sketchData = canvas.toDataURL();
+            const description = document.getElementById('sketch-description').value;
+            
+            const opIndex = operations.findIndex(o => o.id === currentSketchOp.id);
+            if (opIndex !== -1) {
+                operations[opIndex].sketch = sketchData;
+                operations[opIndex].sketchDescription = description;
+                sketches[currentSketchOp.id] = sketchData;
+                
+                saveToLocalStorage();
+                renderOperations();
+                
+                alert('Эскиз сохранён!');
+            }
+        }
+
+        function saveAllSketches() {
+            saveToLocalStorage();
+            alert('Все эскизы сохранены!');
+        }
+
+        // Переход к операционной карте
+        function proceedToOperationCard() {
+            if (operations.length === 0) {
+                alert('Сначала добавьте операции!');
+                return;
+            }
+            switchTab('operation-card');
+        }
+
+        // Заполнение селекта для операционных карт
+        function populateOperationCardSelect() {
+            const select = document.getElementById('op-card-select');
+            select.innerHTML = '<option value="">-- Выберите операцию --</option>' +
+                operations.map(op => `<option value="${op.id}">Оп. ${op.number}: ${op.name}</option>`).join('');
+        }
+
+        // Отображение операционной карты
+        function displayOperationCard() {
+            const opId = document.getElementById('op-card-select').value;
+            
+            if (!opId) {
+                document.getElementById('operation-card-content').innerHTML = `
+                    <p style="text-align: center; color: #7f8c8d; padding: 40px;">
+                        Выберите операцию из списка выше для просмотра операционной карты
+                    </p>
+                `;
+                return;
+            }
+
+            const op = operations.find(o => o.id == opId);
+            if (!op) return;
+
+            const deviceName = document.getElementById('device-name').value || 'Не указано';
+            
+            document.getElementById('oc-device-name').textContent = deviceName;
+            document.getElementById('oc-op-number').textContent = op.number;
+            document.getElementById('oc-op-name').textContent = op.name;
+
+            let content = `
+                <table class="document-table">
+                    <tr>
+                        <th style="width: 200px;">Наименование операции</th>
+                        <td>${op.name}</td>
+                    </tr>
+                    <tr>
+                        <th>Цех/Участок</th>
+                        <td>${op.shop || 'Не указано'}</td>
+                    </tr>
+                    <tr>
+                        <th>Норма времени</th>
+                        <td>${op.time} мин</td>
+                    </tr>
+                    <tr>
+                        <th>Оборудование и оснастка</th>
+                        <td>${op.equipment || 'Не указано'}</td>
+                    </tr>
+                    <tr>
+                        <th>Материалы и комплектующие</th>
+                        <td>${op.materials || 'Не указано'}</td>
+                    </tr>
+                </table>
+                
+                <h3 style="margin: 20px 0 10px; color: #2c3e50;">Содержание переходов:</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    ${op.transitions || 'Не указано'}
+                </div>
+            `;
+
+            if (op.sketch) {
+                content += `
+                    <h3 style="margin: 20px 0 10px; color: #2c3e50;">Эскиз операции:</h3>
+                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; display: inline-block;">
+                        <img src="${op.sketch}" alt="Эскиз" style="max-width: 600px; max-height: 400px;">
+                    </div>
+                    ${op.sketchDescription ? `
+                        <p style="margin-top: 10px; color: #7f8c8d;"><strong>Пояснения:</strong> ${op.sketchDescription}</p>
+                    ` : ''}
+                `;
+            }
+
+            document.getElementById('operation-card-content').innerHTML = content;
+        }
+
+        // Генерация всех операционных карт
+        function generateAllOperationCards() {
+            if (operations.length === 0) {
+                alert('Сначала добавьте операции!');
+                return;
+            }
+            alert('Операционные карты готовы к просмотру. Выберите операцию из списка.');
+        }
+
+        // Переход к маршрутно-операционной карте
+        function proceedToCombinedMap() {
+            if (operations.length === 0) {
+                alert('Сначала добавьте операции!');
+                return;
+            }
+            switchTab('combined-map');
+        }
+
+        // Генерация маршрутно-операционной карты
+        function generateCombinedMap() {
+            if (operations.length === 0) {
+                alert('Сначала добавьте операции!');
+                return;
+            }
+
+            const deviceName = document.getElementById('device-name').value || 'Не указано';
+            const deviceCode = document.getElementById('device-code').value || 'Не указано';
+            const productionType = document.getElementById('production-type').value;
+            
+            const productionTypes = {
+                'single': 'Единичное',
+                'small': 'Мелкосерийное',
+                'series': 'Серийное',
+                'mass': 'Массовое'
+            };
+
+            document.getElementById('cm-device-name').textContent = deviceName;
+            document.getElementById('cm-device-code').textContent = deviceCode;
+            document.getElementById('cm-production-type').textContent = productionTypes[productionType];
+
+            const content = document.getElementById('combined-map-content');
+            
+            content.innerHTML = operations.map(op => `
+                <div style="border: 2px solid #2c3e50; border-radius: 10px; padding: 20px; margin-bottom: 30px; page-break-inside: avoid;">
+                    <div style="background: #3498db; color: white; padding: 10px 15px; border-radius: 5px; margin: -20px -20px 20px -20px;">
+                        <strong>Операция № ${op.number}</strong>: ${op.name}
+                    </div>
+                    
+                    <table class="document-table" style="margin-bottom: 15px;">
+                        <tr>
+                            <th style="width: 200px;">Цех/Участок</th>
+                            <td>${op.shop || '-'}</td>
+                            <th style="width: 200px;">Норма времени</th>
+                            <td>${op.time} мин</td>
+                        </tr>
+                    </table>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Содержание переходов:</strong>
+                        <p style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                            ${op.transitions || '-'}
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Оборудование и оснастка:</strong>
+                        <p style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                            ${op.equipment || '-'}
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Материалы и комплектующие:</strong>
+                        <p style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                            ${op.materials || '-'}
+                        </p>
+                    </div>
+                    
+                    ${op.sketch ? `
+                        <div>
+                            <strong>Эскиз:</strong>
+                            <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-top: 5px; display: inline-block;">
+                                <img src="${op.sketch}" alt="Эскиз" style="max-width: 400px; max-height: 300px;">
+                            </div>
+                            ${op.sketchDescription ? `
+                                <p style="margin-top: 10px; color: #7f8c8d;"><small>${op.sketchDescription}</small></p>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            alert('Маршрутно-операционная карта сформирована!');
+        }
+
+        // Печать документа
+        function printDocument(elementId) {
+            const element = document.getElementById(elementId);
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Печать документа</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+                        th { background: #f0f0f0; }
+                        .document-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+                        .document-title { font-size: 20px; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    ${element.innerHTML}
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            window.onafterprint = function() { window.close(); };
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+        }
+
+        // Экспорт в PDF (имитация через печать)
+        function exportToPDF(elementId) {
+            printDocument(elementId);
+        }
+
+        // Экспорт в JSON
+        function exportToJSON() {
+            const data = {
+                device: {
+                    name: document.getElementById('device-name').value,
+                    code: document.getElementById('device-code').value,
+                    productionType: document.getElementById('production-type').value
+                },
+                operations: operations,
+                routeMapNotes: routeMapNotes,
+                qualityControlNotes: qualityControlNotes,
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `техпроцесс_${data.device.code || 'прибор'}_${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Данные экспортированы в JSON файл!');
+        }
+
+        // Сохранение в localStorage
+        function saveToLocalStorage() {
+            const data = {
+                deviceName: document.getElementById('device-name').value,
+                deviceCode: document.getElementById('device-code').value,
+                productionType: document.getElementById('production-type').value,
+                operations: operations,
+                routeMapNotes: routeMapNotes,
+                qualityControlNotes: qualityControlNotes
+            };
+            localStorage.setItem('techProcessData', JSON.stringify(data));
+        }
+
+        // Загрузка из localStorage
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem('techProcessData');
+            if (data) {
+                const parsed = JSON.parse(data);
+                document.getElementById('device-name').value = parsed.deviceName || '';
+                document.getElementById('device-code').value = parsed.deviceCode || '';
+                document.getElementById('production-type').value = parsed.productionType || 'single';
+                operations = parsed.operations || [];
+                routeMapNotes = parsed.routeMapNotes || '';
+                qualityControlNotes = parsed.qualityControlNotes || '';
+                
+                // Загрузка эскизов
+                operations.forEach(op => {
+                    if (op.sketch) {
+                        sketches[op.id] = op.sketch;
+                    }
+                });
+            }
+        }
+
+        // Закрытие модального окна
+        function closeSketchModal() {
+            document.getElementById('sketch-modal').classList.remove('active');
+        }
+
+        // Populate selects helper
+        function populateSelects() {
+            populateSketchSelect();
+            populateOperationCardSelect();
+        }
+
+        // Автосохранение каждые 30 секунд
+        setInterval(saveToLocalStorage, 30000);
+    </script>
+</body>
+</html>
